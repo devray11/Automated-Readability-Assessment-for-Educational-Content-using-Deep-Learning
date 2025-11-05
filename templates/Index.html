@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Cognitive Load Assessment Tool</title>
+    
+    <!-- External Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* 6-Level Color Scheme */
+            --grade-till-6-color: #2ecc71;
+            --grade-6-8-color: #1abc9c;
+            --grade-9-10-color: #3498db;
+            --grade-11-12-color: #2980b9;
+            --undergraduate-color: #8e44ad;
+            --postgraduate-color: #c0392b;
+            
+            /* UI Colors */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --shadow-light: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-heavy: 0 15px 35px rgba(31, 38, 135, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Parallax Background */
+        .parallax-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            z-index: -2;
+            animation: parallaxFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes parallaxFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(0.5deg); }
+            66% { transform: translateY(5px) rotate(-0.5deg); }
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #f8f9fa, #e9ecef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3)); }
+            to { filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.6)); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Main Input Container */
+        .input-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 2px solid var(--glass-border);
+            box-shadow: var(--shadow-light);
+            padding: 3rem;
+            margin: 2rem auto;
+            max-width: 900px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .input-container:hover::before {
+            left: 100%;
+        }
+
+        /* Text Input Styling */
+        .text-input {
+            width: 100%;
+            min-height: 200px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            font-size: 1.1rem;
+            font-family: 'Inter', sans-serif;
+            resize: vertical;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* Animated Buttons */
+        .btn-analyze {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-analyze::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn-analyze:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-analyze:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-analyze:active {
+            transform: translateY(0) scale(1.02);
+        }
+
+        /* Loading Animation */
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: white;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            margin-top: 3rem;
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .result-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        /* Difficulty Level Badges */
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+            50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); }
+        }
+
+        .badge-grade-till-6th { background: var(--grade-till-6-color); color: white; }
+        .badge-grade-6-8 { background: var(--grade-6-8-color); color: white; }
+        .badge-grade-9-10 { background: var(--grade-9-10-color); color: white; }
+        .badge-grade-11-12 { background: var(--grade-11-12-color); color: white; }
+        .badge-undergraduate { background: var(--undergraduate-color); color: white; }
+        .badge-postgraduate { background: var(--postgraduate-color); color: white; }
+
+        /* Confidence Meter */
+        .confidence-meter {
+            margin: 1.5rem 0;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            border-radius: 10px;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confidence-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Feature Analysis Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .feature-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .feature-value {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .feature-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .feature-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            border-radius: 3px;
+            transition: width 1s ease-out;
+        }
+
+        /* Probability Chart */
+        .probability-chart {
+            margin-top: 2rem;
+        }
+
+        .probability-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .probability-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .probability-label {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .probability-bar {
+            flex: 2;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .probability-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .probability-value {
+            font-weight: 600;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        /* Error Messages */
+        .error-message {
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 4px solid #c0392b;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .input-container {
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-analyze {
+                width: 100%;
+                margin-top: 1rem;
+            }
+        }
+
+        /* Utility Classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .text-gradient {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="parallax-bg"></div>
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+                <h1 class="hero-title">
+                    <i class="fas fa-brain text-gradient"></i>
+                    Cognitive Load Assessment
+                </h1>
+                <p class="hero-subtitle">
+                    Advanced AI-powered text analysis with 6-level educational classification
+                </p>
+                
+                <!-- Main Input Container -->
+                <div class="input-container glass-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="text-center mb-4" style="color: white;">
+                                <i class="fas fa-document-text me-2"></i>
+                                Text Analysis Tool
+                            </h3>
+                            
+                            <textarea 
+                                id="textInput" 
+                                class="text-input" 
+                                placeholder="Enter your text here for cognitive load analysis. The system will analyze linguistic complexity and classify the educational level from Grade till 6th through Postgraduate level..."
+                                maxlength="10000"
+                            ></textarea>
+                            
+                            <div class="text-center mt-4">
+                                <button id="analyzeBtn" class="btn-analyze" onclick="analyzeText()">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    <span>Analyze Text</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Character Counter -->
+                            <div class="text-center mt-3">
+                                <small id="charCounter" style="color: rgba(255, 255, 255, 0.7);">0 / 10,000 characters</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Section -->
+    <div id="loadingSection" class="loading-container">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Analyzing linguistic complexity...</div>
+    </div>
+
+    <!-- Error Section -->
+    <div id="errorMessage" class="container">
+        <div class="error-message">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span id="errorText"></span>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <section id="resultsSection" class="results-section">
+        <div class="container">
+            <!-- Main Result Card -->
+            <div class="result-card" data-aos="fade-up" data-aos-duration="600">
+                <h2 class="text-center mb-4">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    Analysis Results
+                </h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Educational Level Classification</h4>
+                        <div id="difficultyBadge" class="difficulty-badge">
+                            <!-- Dynamic content -->
+                        </div>
+                        
+                        <div class="confidence-meter">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><strong>Confidence Level:</strong></span>
+                                <span id="confidenceText"><strong>0%</strong></span>
+                            </div>
+                            <div class="confidence-bar">
+                                <div id="confidenceFill" class="confidence-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4>Text Statistics</h4>
+                        <div id="textStats">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Linguistic Features Analysis -->
+            <div class="result-card" data-aos="fade-up" data-aos-delay="200">
+                <h3 class="mb-4">
+                    <i class="fas fa-microscope me-2"></i>
+                    Linguistic Feature Analysis
+                </h3>
+                <div id="featuresGrid" class="features-grid">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Classification Probabilities -->
+            <div class="result-card" data-aos="fade-up" data-aos-delay="400">
+                <h3 class="mb-4">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Classification Probabilities
+                </h3>
+                <div id="probabilityChart" class="probability-chart">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    
+    <script>
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+
+        // Configuration
+        const API_BASE_URL = window.location.origin;
+        
+        const DIFFICULTY_COLORS = {
+            'Grade till 6th': '#2ecc71',
+            'Grade 6-8': '#1abc9c', 
+            'Grade 9-10': '#3498db',
+            'Grade 11-12': '#2980b9',
+            'Undergraduate': '#8e44ad',
+            'Postgraduate': '#c0392b'
+        };
+
+        const FEATURE_DESCRIPTIONS = {
+            'avg_sentence_length': 'Average Sentence Length',
+            'type_token_ratio': 'Type-Token Ratio (Lexical Diversity)',
+            'lexical_sophistication': 'Lexical Sophistication', 
+            'word_concreteness': 'Word Concreteness',
+            'mean_dependency_distance': 'Mean Dependency Distance',
+            'subordination_ratio': 'Subordination Ratio',
+            'flesch_kincaid_grade_level': 'Flesch-Kincaid Grade Level',
+            'smog_index': 'SMOG Readability Index',
+            'connective_frequency': 'Connective Frequency',
+            'referential_cohesion': 'Referential Cohesion'
+        };
+
+        // Character counter functionality
+        document.getElementById('textInput').addEventListener('input', function() {
+            const text = this.value;
+            const counter = document.getElementById('charCounter');
+            counter.textContent = `${text.length} / 10,000 characters`;
+            
+            if (text.length > 9000) {
+                counter.style.color = '#e74c3c';
+            } else if (text.length > 7000) {
+                counter.style.color = '#f39c12';
+            } else {
+                counter.style.color = 'rgba(255, 255, 255, 0.7)';
+            }
+        });
+
+        // Enhanced text analysis function
+        async function analyzeText() {
+            const textInput = document.getElementById('textInput');
+            const text = textInput.value.trim();
+
+            // Validation
+            if (!text) {
+                showError('Please enter some text to analyze.');
+                return;
+            }
+
+            if (text.length < 20) {
+                showError('Please provide at least 20 characters for meaningful analysis.');
+                return;
+            }
+
+            // Show loading state
+            showLoading();
+            hideError();
+            hideResults();
+
+            try {
+                // API call to backend
+                const response = await fetch(`${API_BASE_URL}/predict`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Display results with animations
+                displayResults(data);
+                
+            } catch (error) {
+                console.error('Error during analysis:', error);
+                showError(`Analysis failed: ${error.message}. Please try again.`);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayResults(data) {
+            const { prediction, confidence, features, probabilities } = data;
+
+            // Update difficulty badge
+            updateDifficultyBadge(prediction);
+            
+            // Update confidence meter
+            updateConfidenceMeter(confidence);
+            
+            // Update text statistics
+            updateTextStats(data);
+            
+            // Update features grid
+            updateFeaturesGrid(features);
+            
+            // Update probability chart
+            updateProbabilityChart(probabilities);
+            
+            // Show results section with animation
+            showResults();
+        }
+
+        function updateDifficultyBadge(prediction) {
+            const badge = document.getElementById('difficultyBadge');
+            const className = `badge-${prediction.toLowerCase().replace(/\s+/g, '-')}`;
+            
+            badge.className = `difficulty-badge ${className}`;
+            badge.innerHTML = `<i class="fas fa-award me-2"></i>${prediction}`;
+        }
+
+        function updateConfidenceMeter(confidence) {
+            const confidencePercent = Math.round(confidence * 100);
+            const confidenceText = document.getElementById('confidenceText');
+            const confidenceFill = document.getElementById('confidenceFill');
+            
+            confidenceText.innerHTML = `<strong>${confidencePercent}%</strong>`;
+            
+            setTimeout(() => {
+                confidenceFill.style.width = `${confidencePercent}%`;
+            }, 300);
+        }
+
+        function updateTextStats(data) {
+            const statsContainer = document.getElementById('textStats');
+            const textInput = document.getElementById('textInput').value;
+            const characterCount = textInput.length;
+            const wordCount = textInput.trim().split(/\s+/).length;
+            const sentenceCount = textInput.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+            
+            statsContainer.innerHTML = `
+                <div class="row">
+                    <div class="col-4">
+                        <div class="text-center">
+                            <div class="feature-value">${characterCount}</div>
+                            <div class="feature-label">Characters</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-center">
+                            <div class="feature-value">${wordCount}</div>
+                            <div class="feature-label">Words</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-center">
+                            <div class="feature-value">${sentenceCount}</div>
+                            <div class="feature-label">Sentences</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateFeaturesGrid(features) {
+            const grid = document.getElementById('featuresGrid');
+            
+            // Normalize feature values for progress bars (0-100)
+            const normalizeValue = (value, feature) => {
+                const ranges = {
+                    'avg_sentence_length': [5, 30],
+                    'type_token_ratio': [0.3, 1.0],
+                    'lexical_sophistication': [3, 15],
+                    'word_concreteness': [1, 5],
+                    'mean_dependency_distance': [1, 10],
+                    'subordination_ratio': [0, 1],
+                    'flesch_kincaid_grade_level': [1, 20],
+                    'smog_index': [5, 20],
+                    'connective_frequency': [0, 20],
+                    'referential_cohesion': [0, 1]
+                };
+                
+                const [min, max] = ranges[feature] || [0, 10];
+                return Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100));
+            };
+
+            grid.innerHTML = Object.entries(features).map(([key, value]) => {
+                const normalizedValue = normalizeValue(value, key);
+                return `
+                    <div class="feature-item">
+                        <div class="feature-label">${FEATURE_DESCRIPTIONS[key] || key}</div>
+                        <div class="feature-value">${typeof value === 'number' ? value.toFixed(2) : value}</div>
+                        <div class="feature-bar">
+                            <div class="feature-bar-fill" style="width: ${normalizedValue}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Animate progress bars
+            setTimeout(() => {
+                document.querySelectorAll('.feature-bar-fill').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 100);
+        }
+
+        function updateProbabilityChart(probabilities) {
+            const chart = document.getElementById('probabilityChart');
+            
+            const sortedProbs = Object.entries(probabilities)
+                .sort(([,a], [,b]) => b - a);
+
+            chart.innerHTML = sortedProbs.map(([label, prob]) => {
+                const percentage = Math.round(prob * 100);
+                const color = DIFFICULTY_COLORS[label] || '#3498db';
+                
+                return `
+                    <div class="probability-item">
+                        <div class="probability-label">${label}</div>
+                        <div class="probability-bar">
+                            <div class="probability-bar-fill" 
+                                 style="background: ${color}; width: ${percentage}%">
+                            </div>
+                        </div>
+                        <div class="probability-value">${percentage}%</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Animate probability bars
+            setTimeout(() => {
+                document.querySelectorAll('.probability-bar-fill').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 200);
+                });
+            }, 300);
+        }
+
+        function showLoading() {
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('analyzeBtn').disabled = true;
+            
+            const btnText = document.querySelector('#analyzeBtn span');
+            btnText.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('analyzeBtn').disabled = false;
+            
+            const btnText = document.querySelector('#analyzeBtn span');
+            btnText.innerHTML = 'Analyze Text';
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            errorText.textContent = message;
+            errorElement.querySelector('.error-message').style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                hideError();
+            }, 5000);
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').querySelector('.error-message').style.display = 'none';
+        }
+
+        function showResults() {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.style.display = 'block';
+            
+            // Smooth scroll to results
+            setTimeout(() => {
+                resultsSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+        }
+
+        function hideResults() {
+            document.getElementById('resultsSection').style.display = 'none';
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // Ctrl/Cmd + Enter to analyze
+            if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+                event.preventDefault();
+                analyzeText();
+            }
+        });
+
+        // Initialize tooltips and other Bootstrap components
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Cognitive Load Assessment Tool initialized');
+            console.log('API Base URL:', API_BASE_URL);
+        });
+    </script>
+</body>
+</html>
