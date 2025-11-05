@@ -39,3 +39,12 @@ The project uses an ensemble of machine learning models trained on linguistic fe
 ## Dataset
 
 The model was trained on the `Book_Dataset.csv` file, which contains various text samples, each labeled with one of the six corresponding difficulty levels.
+
+![Output Image 1](https://github.com/devray11/Automated-Readability-Assessment-for-Educational-Content-using-Deep-Learning/blob/d6caf8d6d3f6bdc8d269762a666c3c7f1aa495ae/Output-Image-1.jpg)
+
+![Output Image 2](https://github.com/devray11/Automated-Readability-Assessment-for-Educational-Content-using-Deep-Learning/blob/d6caf8d6d3f6bdc8d269762a666c3c7f1aa495ae/Output-Image-2.png)
+
+![Output Image 3](https://github.com/devray11/Automated-Readability-Assessment-for-Educational-Content-using-Deep-Learning/blob/d6caf8d6d3f6bdc8d269762a666c3c7f1aa495ae/Output-Image-3.png)
+
+![Output Image 4](https://github.com/devray11/Automated-Readability-Assessment-for-Educational-Content-using-Deep-Learning/blob/d6caf8d6d3f6bdc8d269762a666c3c7f1aa495ae/Output-Image-4.png)
+
